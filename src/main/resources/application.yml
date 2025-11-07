@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: agent
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      base-url: ${OPENAI_BASE_URL}
+      chat:
+        options:
+          model: ${OPENAI_MODEL}
+
+server:
+  port: 8881
