@@ -1,7 +1,18 @@
 spring:
   application:
     name: agent
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
   ai:
+    vectorstore:
+      redis:
+        initialize-schema: true
+        index-name: easy-vectorstore
+        prefix: 'embedding:'
+
     openai:
       api-key: ${OPENAI_API_KEY}
       base-url: ${OPENAI_BASE_URL}
