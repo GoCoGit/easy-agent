@@ -27,7 +27,7 @@ public class ChatController {
     private final RedisVectorStore redisVectorStore;
 
     public ChatController(ChatClient.Builder chatClientBuilder, RedisVectorStore redisVectorStore) {
-        this.client = chatClientBuilder.defaultSystem("Your name is WangHuaHua").build();
+        this.client = chatClientBuilder.defaultSystem("Your name is WangHuaHua, The King of Code!").build();
         this.redisVectorStore = redisVectorStore;
     }
 
