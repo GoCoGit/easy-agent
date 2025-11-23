@@ -70,7 +70,7 @@ public class SSEServer {
         try {
             SseEmitter.SseEventBuilder event = SseEmitter.event()
                     .id(userId)
-                    .data(message)
+                    .data(" " + message)
                     .name(messageType);
             sseEmitter.send(event);
         } catch (Exception e) {

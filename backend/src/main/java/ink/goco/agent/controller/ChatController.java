@@ -61,8 +61,7 @@ public class ChatController {
         response.setCharacterEncoding("UTF-8");
         Flux<String> stringFlux = client.prompt(msg).stream().content();
         List<String> list = stringFlux.toStream().peek(s -> {
-            // sse 的第一个空格会被吃掉，主动加一个空格
-            SSEServer.send("123", " " + s, "message");
+            SSEServer.send("123", s, "message");
         }).toList();
 
         String fullContent = String.join("", list);
