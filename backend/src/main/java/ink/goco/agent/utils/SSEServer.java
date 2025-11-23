@@ -1,9 +1,13 @@
 package ink.goco.agent.utils;
 
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -62,6 +66,7 @@ public class SSEServer {
                                           String userId,
                                           String message,
                                           String messageType) {
+
         try {
             SseEmitter.SseEventBuilder event = SseEmitter.event()
                     .id(userId)

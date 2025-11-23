@@ -8,6 +8,9 @@ import {
   type KeyboardEvent,
 } from "react";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 type Message = {
   id: number;
   sender: "me" | "them";
@@ -66,7 +69,7 @@ export default function Home() {
     source.onmessage = (event) => {
       if (!event.data) return;
 
-      let chunk = event.data;
+      const chunk = event.data;
 
       appendAssistantMessage(chunk);
     };
@@ -148,9 +151,8 @@ export default function Home() {
             return (
               <div
                 key={message.id}
-                className={`flex items-start gap-3 ${
-                  isMine ? "justify-end" : "justify-start"
-                }`}
+                className={`flex items-start gap-3 ${isMine ? "justify-end" : "justify-start"
+                  }`}
               >
                 {!isMine && (
                   <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-200 text-sm font-semibold text-slate-600">
@@ -158,11 +160,12 @@ export default function Home() {
                   </div>
                 )}
                 <div
-                  className={`max-w-[65%] rounded-2xl px-4 py-2 text-lg text-slate-800 shadow ${
-                    isMine ? "bg-emerald-400 text-white" : "bg-slate-100"
-                  }`}
+                  className={`max-w-[65%] rounded-2xl px-4 py-2 text-lg text-slate-800 shadow ${isMine ? "bg-emerald-400 text-white" : "bg-slate-100"
+                    }`}
                 >
-                  {message.text}
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {message.text}
+                  </ReactMarkdown>
                 </div>
                 {isMine && (
                   <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500 text-sm font-semibold text-white">
@@ -174,20 +177,20 @@ export default function Home() {
           })}
         </div>
         <div className="w-full h-[15%] flex justify-center items-center p-8">
-            <div className="flex w-full h-full gap-4">
+          <div className="flex w-full h-full gap-4">
             <input
               type="text"
               placeholder="请输入内容"
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                onKeyDown={handleKeyDown}
-                className="flex-1 h-full rounded-xl border border-slate-200 bg-white/80 px-4 text-lg text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              onKeyDown={handleKeyDown}
+              className="flex-1 h-full rounded-xl border border-slate-200 bg-white/80 px-4 text-lg text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />
-              <button
-                onClick={sendMessage}
-                disabled={isSending}
-                className="h-full rounded-xl bg-blue-500 px-8 text-lg font-semibold text-white shadow-md transition hover:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:cursor-not-allowed disabled:bg-blue-400"
-              >
+            <button
+              onClick={sendMessage}
+              disabled={isSending}
+              className="h-full rounded-xl bg-blue-500 px-8 text-lg font-semibold text-white shadow-md transition hover:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:cursor-not-allowed disabled:bg-blue-400"
+            >
               发送
             </button>
           </div>
