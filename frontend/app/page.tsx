@@ -6,25 +6,32 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
+  type ChangeEvent,
 } from "react";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import { message } from "antd";
+import { request, baseURL } from "../lib/request";
+
 type Message = {
   id: number;
   sender: "me" | "them";
   text: string;
+  done?: boolean;
 };
 
-const HOST = "http://localhost:8881"
 const USER_ID = "123";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [searchMode, setSearchMode] = useState<"common" | "rag" | "web">("common");
   const listRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [messageApi, contextHolder] = message.useMessage();
 
   // 追加助手消息
   const appendAssistantMessage = useCallback(
@@ -63,7 +70,7 @@ export default function Home() {
 
   useEffect(() => {
     const source = new EventSource(
-      `${HOST}/sse/connect?userId=${USER_ID}`
+      `${baseURL}/sse/connect?userId=${USER_ID}`
     );
 
     source.onmessage = (event) => {
@@ -99,18 +106,81 @@ export default function Home() {
       ...prev,
       { id: Date.now(), sender: "me", text, done: true },
     ]);
-    const params = new URLSearchParams({
-      msg: text,
-      userId: USER_ID,
-    });
     try {
       setIsSending(true);
-      await fetch(`${HOST}/chat3?${params.toString()}`);
+      const endpoint =
+        searchMode === "rag"
+          ? "/chat/rag"
+          : searchMode === "web"
+            ? "/chat/web"
+            : "/chat/common";
+
+      await request.get(endpoint, {
+        params: {
+          msg: text,
+        },
+      });
     } catch (error) {
       console.error("Failed to send message", error);
     } finally {
       setIsSending(false);
     }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await request.post(`/rag/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const data = res.data;
+
+      if (!data || data.status !== 200) {
+        console.error("Upload failed", data);
+        messageApi.open({
+          type: "error",
+          content: "上传失败，请稍后重试",
+        });
+      } else {
+        messageApi.open({
+          type: "success",
+          content: "上传成功",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to upload document", error);
+      messageApi.open({
+        type: "error",
+        content: "上传失败，请检查网络后重试",
+      });
+    } finally {
+      // 允许再次选择同一个文件
+      event.target.value = "";
+    }
+  };
+
+  const handleModeToggle = (mode: "rag" | "web") => {
+    setSearchMode((prev) => (prev === mode ? "common" : mode));
+  };
+
+  const getModeClasses = (mode: "rag" | "web") => {
+    const isActive = searchMode === mode;
+    return `px-4 py-2 rounded border-2 font-semibold cursor-pointer transition-colors ${isActive
+      ? "border-blue-600 text-white bg-blue-600 shadow"
+      : "border-blue-500 text-blue-500 hover:bg-blue-50 hover:text-blue-600"
+      }`;
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -136,6 +206,7 @@ export default function Home() {
         background: "linear-gradient(135deg, #cfe2ff, #f8d7ff)",
       }}
     >
+      {contextHolder}
       <div
         className="overflow-hidden rounded-2xl bg-white shadow-2xl flex flex-col justify-center items-center w-[1200px] h-[800px]"
       >
@@ -144,7 +215,7 @@ export default function Home() {
         </div>
         <div
           ref={listRef}
-          className="w-full h-[77%] flex flex-col gap-4 overflow-y-auto bg-white/70 p-8"
+          className="w-full h-[74%] flex flex-col gap-4 overflow-y-auto bg-white/70 p-8"
         >
           {messages.map((message) => {
             const isMine = message.sender === "me";
@@ -176,7 +247,33 @@ export default function Home() {
             );
           })}
         </div>
-        <div className="w-full h-[15%] flex justify-center items-center p-8">
+        <div className="w-full h-[6%] flex items-center px-6 py-2 gap-3">
+          <div
+            className={getModeClasses("web")}
+            onClick={() => handleModeToggle("web")}
+          >
+            联网搜索
+          </div>
+          <div
+            className={getModeClasses("rag")}
+            onClick={() => handleModeToggle("rag")}
+          >
+            知识库搜索
+          </div>
+          <div
+            className="px-4 py-2 rounded border-2 border-blue-500 text-blue-500 font-semibold cursor-pointer transition-colors hover:bg-blue-50 hover:text-blue-600"
+            onClick={handleUploadClick}
+          >
+            上传文档
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+        </div>
+        <div className="w-full h-[12%] flex justify-center items-center p-6 pt-3">
           <div className="flex w-full h-full gap-4">
             <input
               type="text"
