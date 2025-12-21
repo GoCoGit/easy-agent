@@ -1,6 +1,8 @@
 spring:
   application:
-    name: agent
+    name: easy-agent
+  profiles:
+    active: dev
   data:
     redis:
       host: ${REDIS_HOST}

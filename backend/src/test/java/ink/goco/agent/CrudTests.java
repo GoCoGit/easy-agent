@@ -3,6 +3,7 @@ package ink.goco.agent;
 import ink.goco.agent.entity.User;
 import ink.goco.agent.repository.UserRepository;
 import io.github.cdimascio.dotenv.Dotenv;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @Transactional
+@Slf4j
 public class CrudTests {
 
     @Autowired
@@ -44,6 +46,7 @@ public class CrudTests {
         assertThat(foundOpt).isPresent();
 
         User found = foundOpt.get();
+        log.info("EA-DEBUG {}", found);
         assertThat(found.getUsername()).isEqualTo("alice");
         assertThat(found.getPassword()).isEqualTo("abc123");
 
