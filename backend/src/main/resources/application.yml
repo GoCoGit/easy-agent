@@ -6,12 +6,13 @@ spring:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
+      key-prefix: "EA:"
   ai:
     vectorstore:
       redis:
         initialize-schema: true
         index-name: easy-vectorstore
-        prefix: 'embedding:'
+        prefix: "${spring.data.redis.key-prefix}embedding:"
 
     openai:
       api-key: ${OPENAI_API_KEY}
