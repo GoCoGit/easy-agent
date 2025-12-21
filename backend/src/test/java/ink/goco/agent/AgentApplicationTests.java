@@ -33,4 +33,8 @@ class AgentApplicationTests {
         System.out.println(test);
     }
 
+    @Test
+    void dbTest() {
+
+    }
 }

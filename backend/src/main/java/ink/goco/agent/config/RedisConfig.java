@@ -1,5 +1,6 @@
 package ink.goco.agent.config;
 
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Order(2)
 public class RedisConfig {
     
-    @Autowired
+    @Resource
     private PrefixRedisSerializer prefixRedisSerializer;
     
     @Bean
