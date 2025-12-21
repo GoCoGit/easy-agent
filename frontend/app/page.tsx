@@ -9,6 +9,12 @@ import {
   type ChangeEvent,
 } from "react";
 
+import {
+  UploadOutlined,
+  GlobalOutlined,
+  DatabaseOutlined,
+} from '@ant-design/icons';
+
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -177,7 +183,7 @@ export default function Home() {
 
   const getModeClasses = (mode: "rag" | "web") => {
     const isActive = searchMode === mode;
-    return `px-4 py-2 rounded border-2 font-semibold cursor-pointer transition-colors ${isActive
+    return `px-4 py-1 rounded border-2 font-semibold cursor-pointer transition-colors ${isActive
       ? "border-blue-600 text-white bg-blue-600 shadow"
       : "border-blue-500 text-blue-500 hover:bg-blue-50 hover:text-blue-600"
       }`;
@@ -247,24 +253,24 @@ export default function Home() {
             );
           })}
         </div>
-        <div className="w-full h-[6%] flex items-center px-6 py-2 gap-3">
+        <div className="w-full h-[6%] flex items-center px-6 pt-3 gap-3">
           <div
             className={getModeClasses("web")}
             onClick={() => handleModeToggle("web")}
           >
-            联网搜索
+            <GlobalOutlined /> 联网搜索
           </div>
           <div
             className={getModeClasses("rag")}
             onClick={() => handleModeToggle("rag")}
           >
-            知识库搜索
+            <DatabaseOutlined /> 知识库搜索
           </div>
           <div
-            className="px-4 py-2 rounded border-2 border-blue-500 text-blue-500 font-semibold cursor-pointer transition-colors hover:bg-blue-50 hover:text-blue-600"
+            className="px-4 py-1 rounded border-2 border-blue-500 text-blue-500 font-semibold cursor-pointer transition-colors hover:bg-blue-50 hover:text-blue-600"
             onClick={handleUploadClick}
           >
-            上传文档
+            <UploadOutlined /> 上传文档
           </div>
           <input
             ref={fileInputRef}
