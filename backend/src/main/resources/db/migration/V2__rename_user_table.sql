@@ -1,1 +1,0 @@
-ALTER TABLE "user" RENAME TO t_user;

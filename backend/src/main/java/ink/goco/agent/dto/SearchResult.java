@@ -1,4 +1,4 @@
-package ink.goco.agent.entity;
+package ink.goco.agent.dto;
 
 import lombok.Data;
 

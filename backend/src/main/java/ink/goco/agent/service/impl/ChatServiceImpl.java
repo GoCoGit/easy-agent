@@ -2,10 +2,9 @@ package ink.goco.agent.service.impl;
 
 import cn.hutool.json.JSONUtil;
 import ink.goco.agent.constant.MyPrompt;
-import ink.goco.agent.entity.SearXNGResponse;
-import ink.goco.agent.entity.SearchResult;
+import ink.goco.agent.dto.SearXNGResponse;
+import ink.goco.agent.dto.SearchResult;
 import ink.goco.agent.service.ChatService;
-import ink.goco.agent.utils.GResult;
 import ink.goco.agent.utils.SSEServer;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,6 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.document.Document;
@@ -27,7 +25,6 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Slf4j

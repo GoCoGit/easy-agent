@@ -33,7 +33,6 @@ public class CrudTests {
     void crud_test() {
 // ---------- Create ----------
         User user = User.builder()
-                .username("alice")
                 .password("abc123")
                 .build();
 
@@ -47,7 +46,6 @@ public class CrudTests {
 
         User found = foundOpt.get();
         log.info("EA-DEBUG {}", found);
-        assertThat(found.getUsername()).isEqualTo("alice");
         assertThat(found.getPassword()).isEqualTo("abc123");
 
         // ---------- Update ----------

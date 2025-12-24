@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "t_user")
@@ -17,13 +16,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(nullable = false, unique = true)
+    private String phone;
+    private String avatar;
+    private String email;
     @Column(nullable = false)
-    private String username;
-
     private String password;
-
-    @Column(name = "created_at", nullable = false)
+    private String passwordSalt;
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
