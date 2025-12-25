@@ -38,12 +38,20 @@ spring:
         index-name: easy-vectorstore
         prefix: "${spring.data.redis.key-prefix}embedding:"
 
-    openai:
-      api-key: ${OPENAI_API_KEY}
-      base-url: ${OPENAI_BASE_URL}
+    ollama:
+      base-url: http://localhost:11434
       chat:
+        model: llama3.2:1b
         options:
-          model: ${OPENAI_MODEL}
+          temperature: 0.7
+          top-p: 0.9
+
+#    openai:
+#      api-key: ${OPENAI_API_KEY}
+#      base-url: ${OPENAI_BASE_URL}
+#      chat:
+#        options:
+#          model: ${OPENAI_MODEL}
 
 server:
   port: 8881
