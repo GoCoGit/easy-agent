@@ -6,7 +6,6 @@ const instance = axios.create({
   // 如果后面需要，可以在这里统一配置 baseURL、超时时间、headers 等
   // baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   baseURL: baseURL,
-  timeout: 30000,
 });
 
 // 这里可以按需添加请求/响应拦截器

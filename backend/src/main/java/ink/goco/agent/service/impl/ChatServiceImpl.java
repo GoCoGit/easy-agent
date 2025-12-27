@@ -15,6 +15,7 @@ import okhttp3.Response;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.document.Document;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.redis.RedisVectorStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -44,8 +45,14 @@ public class ChatServiceImpl implements ChatService {
 
     private final RedisVectorStore redisVectorStore;
 
-    public ChatServiceImpl(ChatClient.Builder chatClientBuilder, RedisTemplate<String, Object> redisTemplate, RedisVectorStore redisVectorStore) {
-        this.client = chatClientBuilder.defaultSystem(MyPrompt.SYSTEM_PROMPT).build();
+    public ChatServiceImpl(ChatClient.Builder chatClientBuilder,
+                           ToolCallbackProvider tools,
+                           RedisTemplate<String, Object> redisTemplate,
+                           RedisVectorStore redisVectorStore) {
+        this.client = chatClientBuilder
+                .defaultToolCallbacks(tools)
+                .defaultSystem(MyPrompt.SYSTEM_PROMPT)
+                .build();
         this.redisTemplate = redisTemplate;
         this.redisVectorStore = redisVectorStore;
     }
