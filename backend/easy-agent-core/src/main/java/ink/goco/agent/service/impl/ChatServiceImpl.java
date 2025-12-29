@@ -13,6 +13,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.tool.ToolCallbackProvider;
@@ -38,6 +40,7 @@ public class ChatServiceImpl implements ChatService {
     @Value("${searxng.count}")
     private int SEARXNG_COUNT;
 
+    private ChatMemory chatMemory;
     private final ChatClient client;
 
     @Resource
@@ -48,9 +51,11 @@ public class ChatServiceImpl implements ChatService {
     public ChatServiceImpl(ChatClient.Builder chatClientBuilder,
                            ToolCallbackProvider tools,
                            RedisTemplate<String, Object> redisTemplate,
-                           RedisVectorStore redisVectorStore) {
+                           RedisVectorStore redisVectorStore,
+                           ChatMemory chatMemory) {
         this.client = chatClientBuilder
                 .defaultToolCallbacks(tools)
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .defaultSystem(MyPrompt.SYSTEM_PROMPT)
                 .build();
         this.redisTemplate = redisTemplate;

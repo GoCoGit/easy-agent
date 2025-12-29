@@ -42,6 +42,9 @@ spring:
             server1:
               url: https://mcp.amap.com
               sse-endpoint: /sse?key=${AMAP_KEY}
+            server2:
+              url: http://localhost:8882
+              sse-endpoint: /sse
         stdio:
           servers-configuration: classpath:mcp-server.json
 

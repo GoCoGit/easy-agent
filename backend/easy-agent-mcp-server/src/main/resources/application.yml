@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: easy-agent-mcp-server
+  profiles:
+    active: dev
+  ai:
+    mcp:
+      server:
+        name: spring-ai-mcp-server-sse-1.0.0
+        type: ASYNC
+        version: 1.0.0
+        sse-endpoint: /sse
+
+server:
+  port: 8882
