@@ -23,8 +23,11 @@ public class UserController {
             return GResult.errorMsg("手机号或密码不能为空");
         }
 
-        User login = userService.login(request.getPhone(), request.getPassword());
-
-        return GResult.ok(login);
+        try {
+            String token = userService.login(request.getPhone(), request.getPassword());
+            return GResult.ok(token);
+        } catch (RuntimeException e) {
+            return GResult.errorMsg(e.getMessage());
+        }
     }
 }

@@ -1,5 +1,6 @@
 CREATE TABLE "t_user" (
                         id BIGSERIAL PRIMARY KEY,
+                        nickname VARCHAR(64) NOT NULL,
                         phone VARCHAR(64) NOT NULL,
                         email VARCHAR(64),
                         avatar VARCHAR(64) ,

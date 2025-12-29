@@ -1,8 +1,10 @@
 package ink.goco.agent.service.impl;
 
+import ink.goco.agent.constant.SystemConfig;
 import ink.goco.agent.entity.User;
 import ink.goco.agent.repository.UserRepository;
 import ink.goco.agent.service.UserService;
+import ink.goco.agent.utils.JwtUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public User login(String phone, String password) {
+    public String login(String phone, String password) {
         // 1. 根据field，查询username、email、phone字段是否存在
         User user = userRepository.findByPhone(phone)
                 .orElse(null);
@@ -27,24 +29,25 @@ public class UserServiceImpl implements UserService {
 
             // 3. 验证密码是否一致,一致则返回用户信息，不一致则抛出异常（密码错误）
             if (encryptedPassword.equals(user.getPassword())) {
-                return user;
+                return JwtUtil.generateTokenForUser(user.getId(), user.getNickname());
             } else {
                 throw new RuntimeException("用户名或密码错误");
             }
         } else {
             // 4. 如不存在，则新建用户，随机生成6位密码盐，默认密码：123456，密码进行md5加密，保存用户信息
             String passwordSalt = generateRandomSalt();
-            String defaultEncryptedPassword = encryptPassword("123456", passwordSalt);
+            String defaultEncryptedPassword = encryptPassword(SystemConfig.DEFAULT_USER_PASSWORD, passwordSalt);
 
             User newUser = User.builder()
+                    .nickname(SystemConfig.DEFAULT_USER_NICKNAME_PREFIX + phone)
                     .phone(phone)
                     .password(defaultEncryptedPassword)
                     .passwordSalt(passwordSalt)
                     .build();
 
             user = userRepository.save(newUser);
-            // 5. 注册成功，返回用户信息
-            return user;
+            // 5. 注册成功，自动登录返回jwt令牌
+            return JwtUtil.generateTokenForUser(user.getId(), user.getNickname());
         }
     }
 

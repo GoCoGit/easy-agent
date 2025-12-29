@@ -16,6 +16,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nickname;
     @Column(nullable = false, unique = true)
     private String phone;
     private String avatar;
@@ -25,6 +26,11 @@ public class User {
     private String passwordSalt;
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    public User(Long id, String nickname) {
+        this.id = id;
+        this.nickname = nickname;
+    }
 
     @PrePersist
     public void prePersist() {
